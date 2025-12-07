@@ -5,10 +5,10 @@ import ProductList from "@/components/ProductList";
 import Footer from "@/components/Footer";
 import { ReactNode } from "react";
 
-// Lazy-load chat widget (no SSR)
+// Dynamically load ChatWidget on the client only
 const ChatWidget = dynamic(() => import("@/components/ChatWidget"), { ssr: false });
 
-// Section wrapper with typed props
+// Section wrapper component with proper TypeScript typing
 type SectionWrapperProps = {
   children: ReactNode;
   bg?: string;
@@ -21,14 +21,13 @@ const SectionWrapper = ({ children, bg = "bg-white", className = "" }: SectionWr
   </section>
 );
 
-// Service type
+// Types for services and team members
 type Service = {
   emoji: string;
   title: string;
   desc: string;
 };
 
-// Team member type
 type TeamMember = {
   name: string;
   role: string;
@@ -215,6 +214,3 @@ export default function Home() {
     </>
   );
 }
-
-// Next.js 13 App Router: force dynamic rendering
-export const dynamicRendering = "force-dynamic";
