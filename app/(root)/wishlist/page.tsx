@@ -13,44 +13,63 @@ const Wishlist = () => {
   const [signedInUser, setSignedInUser] = useState<UserType | null>(null)
   const [wishlist, setWishlist] = useState<ProductType[]>([])
 
-  // Fetch user and their wishlist products together
-  useEffect(() => {
-    const fetchUserAndWishlist = async () => {
-      if (!user) return
-
-      setLoading(true)
-
-      try {
-        // Fetch full user data
-        const res = await fetch("/api/users")
-        const data: UserType = await res.json()
-        setSignedInUser(data)
-
-        // Fetch wishlist products safely
-        const wishlistProducts = await Promise.all(
-          (data.wishlist || []).map(async (productId) => {
-            try {
-              return await getProductDetails(productId)
-            } catch (err) {
-              console.error(`Failed to fetch product ${productId}`, err)
-              return null
-            }
-          })
-        )
-
-        // Remove any nulls if fetch failed
-        setWishlist(wishlistProducts.filter(Boolean) as ProductType[])
-      } catch (err) {
-        console.error("Failed to fetch user or wishlist", err)
-      } finally {
-        setLoading(false)
-      }
+  // Fetch user data from your API
+  const getUser = async () => {
+    try {
+      console.log("Fetching signed-in user...")
+      const res = await fetch("/api/users")
+      const data = await res.json()
+      console.log("User data fetched:", data)
+      setSignedInUser(data)
+      setLoading(false)
+    } catch (err) {
+      console.error("[users_GET] Error:", err)
     }
+  }
 
-    fetchUserAndWishlist()
+  useEffect(() => {
+    if (user) {
+      getUser()
+    }
   }, [user])
 
+  // Fetch wishlist products
+  const getWishlistProducts = async () => {
+    if (!signedInUser) return
+    setLoading(true)
+    console.log("Fetching wishlist products for user:", signedInUser)
+
+    try {
+      const wishlistProducts = await Promise.all(
+        signedInUser.wishlist.map(async (productId) => {
+          const res = await getProductDetails(productId)
+          console.log("Product fetched:", res)
+          return res
+        })
+      )
+
+      // Filter out nulls before updating state
+      const filteredProducts = wishlistProducts.filter(
+        (product): product is ProductType => product !== null
+      )
+
+      console.log("Filtered wishlist products:", filteredProducts)
+      setWishlist(filteredProducts)
+    } catch (err) {
+      console.error("[wishlist_FETCH] Error fetching products:", err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    if (signedInUser) {
+      getWishlistProducts()
+    }
+  }, [signedInUser])
+
   const updateSignedInUser = (updatedUser: UserType) => {
+    console.log("Updating signed-in user:", updatedUser)
     setSignedInUser(updatedUser)
   }
 
@@ -60,19 +79,17 @@ const Wishlist = () => {
     <div className="px-10 py-5">
       <p className="text-heading3-bold my-10">Your Wishlist</p>
 
-      {wishlist.length === 0 ? (
-        <p>No items in your wishlist</p>
-      ) : (
-        <div className="flex flex-wrap justify-center gap-16">
-          {wishlist.map((product) => (
-            <ProductCard
-              key={product._id}
-              product={product}
-              updateSignedInUser={updateSignedInUser}
-            />
-          ))}
-        </div>
-      )}
+      {wishlist.length === 0 && <p>No items in your wishlist</p>}
+
+      <div className="flex flex-wrap justify-center gap-16">
+        {wishlist.map((product) => (
+          <ProductCard
+            key={product._id}
+            product={product}
+            updateSignedInUser={updateSignedInUser}
+          />
+        ))}
+      </div>
     </div>
   )
 }
