@@ -1,3 +1,6 @@
+export const dynamic = "force-dynamic";
+
+
 import ProductCard from "@/components/ProductCard";
 import { getCollectionDetails } from "@/lib/actions/actions";
 import Image from "next/image";
