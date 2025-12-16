@@ -1,12 +1,16 @@
+export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
+
 import Image from "next/image";
-import dynamic from "next/dynamic";
+import {default as loadDynamic} from "next/dynamic"; // rename here
 import Collections from "@/components/Collections";
 import ProductList from "@/components/ProductList";
 import Footer from "@/components/Footer";
 import { ReactNode } from "react";
 
+
 // Dynamically load ChatWidget on the client only
-const ChatWidget = dynamic(() => import("@/components/ChatWidget"), { ssr: false });
+const ChatWidget = loadDynamic(() => import("@/components/ChatWidget"), { ssr: false });
 
 // Section wrapper component with proper TypeScript typing
 type SectionWrapperProps = {
