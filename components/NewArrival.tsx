@@ -9,7 +9,7 @@ const NewArrival = async () => {
 
   return (
     <div className="flex flex-col items-center gap-10 py-8 px-5">
-      <p className="text-heading1-bold">New Arrivals</p>
+      
 
       {!newArrivals || newArrivals.length === 0 ? (
         <p className="text-body-bold">No new arrivals</p>
