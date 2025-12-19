@@ -2,15 +2,17 @@ export const dynamic = "force-dynamic";
 export const fetchCache = "force-no-store";
 
 import Image from "next/image";
-import {default as loadDynamic} from "next/dynamic"; // rename here
+import { default as loadDynamic } from "next/dynamic"; // rename here
 import Collections from "@/components/Collections";
 import ProductList from "@/components/ProductList";
+import NewArrival from "@/components/NewArrival";
 import Footer from "@/components/Footer";
 import { ReactNode } from "react";
 
-
 // Dynamically load ChatWidget on the client only
-const ChatWidget = loadDynamic(() => import("@/components/ChatWidget"), { ssr: false });
+const ChatWidget = loadDynamic(() => import("@/components/ChatWidget"), {
+  ssr: false,
+});
 
 // Section wrapper component with proper TypeScript typing
 type SectionWrapperProps = {
@@ -19,8 +21,14 @@ type SectionWrapperProps = {
   className?: string;
 };
 
-const SectionWrapper = ({ children, bg = "bg-white", className = "" }: SectionWrapperProps) => (
-  <section className={`${bg} py-16 px-6 sm:px-10 md:px-16 lg:px-24 ${className}`}>
+const SectionWrapper = ({
+  children,
+  bg = "bg-white",
+  className = "",
+}: SectionWrapperProps) => (
+  <section
+    className={`${bg} py-16 px-6 sm:px-10 md:px-16 lg:px-24 ${className}`}
+  >
     {children}
   </section>
 );
@@ -40,9 +48,21 @@ type TeamMember = {
 
 export default function Home() {
   const services: Service[] = [
-    { emoji: "🚀", title: "Fast Delivery", desc: "Receive your products quickly with our reliable shipping partners." },
-    { emoji: "🔒", title: "Secure Payments", desc: "Shop confidently with our safe and convenient payment methods." },
-    { emoji: "💬", title: "Customer Support", desc: "Our support team is always ready to help you, 24/7." },
+    {
+      emoji: "🚀",
+      title: "Fast Delivery",
+      desc: "Receive your products quickly with our reliable shipping partners.",
+    },
+    {
+      emoji: "🔒",
+      title: "Secure Payments",
+      desc: "Shop confidently with our safe and convenient payment methods.",
+    },
+    {
+      emoji: "💬",
+      title: "Customer Support",
+      desc: "Our support team is always ready to help you, 24/7.",
+    },
   ];
 
   const teamMembers: TeamMember[] = [
@@ -70,11 +90,13 @@ export default function Home() {
                 Your Business, <br /> Your Style
               </h1>
               <p className="text-white text-[clamp(0.875rem,2vw,1rem)] md:text-lg mb-4 drop-shadow-xl">
-                Premium products, seamless shopping, and a platform designed for modern lifestyles. 
-                Elevate your everyday experiences with Trevicio.
+                Premium products, seamless shopping, and a platform designed for
+                modern lifestyles. Elevate your everyday experiences with
+                Trevicio.
               </p>
               <p className="text-white text-[clamp(0.75rem,1.5vw,0.875rem)] md:text-base drop-shadow-xl">
-                Start exploring our collections and experience convenience, quality, and style in every order.
+                Start exploring our collections and experience convenience,
+                quality, and style in every order.
               </p>
             </div>
           </div>
@@ -130,7 +152,6 @@ export default function Home() {
           </p>
         </SectionWrapper>
 
-        
         {/* Banner */}
         <section className="w-full">
           <Image
@@ -158,7 +179,10 @@ export default function Home() {
           </p>
           <div className="flex flex-wrap justify-center gap-6">
             {services.map(({ emoji, title, desc }) => (
-              <div key={title} className="bg-gray-100 p-6 rounded-lg shadow-md w-64 text-center">
+              <div
+                key={title}
+                className="bg-gray-100 p-6 rounded-lg shadow-md w-64 text-center"
+              >
                 <div className="text-4xl mb-2">{emoji}</div>
                 <h3 className="font-semibold text-lg mb-2">{title}</h3>
                 <p className="text-gray-700">{desc}</p>
@@ -167,7 +191,23 @@ export default function Home() {
           </div>
         </SectionWrapper>
 
-        
+        {/* Pre–New Arrivals Message */}
+        <section className="w-full flex flex-col items-center text-center py-16 px-6 bg-gradient-to-b from-gray-50 to-white">
+          <span className="uppercase tracking-widest text-sm font-semibold text-gray-500">
+            Fresh Drop
+          </span>
+
+          <h2 className="mt-4 text-4xl md:text-5xl font-bold text-gray-900">
+            Discover What’s New
+          </h2>
+
+          <p className="mt-4 max-w-2xl text-gray-600 text-lg leading-relaxed">
+            Carefully selected, newly added pieces designed to elevate your
+            style. Explore our latest arrivals and find something made just for
+            you.
+          </p>
+        </section>
+
         {/* Banner */}
         <section className="w-full">
           <Image
@@ -180,6 +220,9 @@ export default function Home() {
           />
         </section>
 
+        {/* New Arrivals */}
+        <NewArrival />
+
         {/* Meet The Team Section */}
         <SectionWrapper bg="bg-gray-100" className="text-center">
           <h2 className="text-2xl md:text-3xl font-semibold mb-8">
@@ -187,7 +230,10 @@ export default function Home() {
           </h2>
           <div className="flex flex-wrap justify-center gap-6">
             {teamMembers.map(({ name, role, img }) => (
-              <div key={name} className="bg-white p-4 rounded-lg shadow-md w-64">
+              <div
+                key={name}
+                className="bg-white p-4 rounded-lg shadow-md w-64"
+              >
                 <Image
                   src={img}
                   alt={name}
@@ -215,9 +261,9 @@ export default function Home() {
           </p>
           <p className="text-gray-700 max-w-3xl mx-auto text-center">
             Our team works tirelessly to curate collections that reflect style,
-            quality, and functionality. Every purchase is backed by our commitment
-            to customer satisfaction, ensuring your shopping journey is seamless
-            and enjoyable.
+            quality, and functionality. Every purchase is backed by our
+            commitment to customer satisfaction, ensuring your shopping journey
+            is seamless and enjoyable.
           </p>
         </SectionWrapper>
 
@@ -227,11 +273,13 @@ export default function Home() {
             Contact Us 📞
           </h2>
           <p className="text-gray-700 max-w-3xl mx-auto mb-4 text-center">
-            Have questions or need assistance? Our team is ready to help. Use the
-            floating chat button 💬 at the bottom left for quick WhatsApp contact.
+            Have questions or need assistance? Our team is ready to help. Use
+            the floating chat button 💬 at the bottom left for quick WhatsApp
+            contact.
           </p>
           <p className="text-gray-700 max-w-3xl mx-auto text-center">
-            Direct contact: <span className="font-semibold">+265 991 406 247</span>
+            Direct contact:{" "}
+            <span className="font-semibold">+265 991 406 247</span>
           </p>
         </SectionWrapper>
       </main>
