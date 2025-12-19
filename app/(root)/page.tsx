@@ -130,6 +130,19 @@ export default function Home() {
           </p>
         </SectionWrapper>
 
+        
+        {/* Banner */}
+        <section className="w-full">
+          <Image
+            src="/banner2.png"
+            alt="Trevicio Banner"
+            width={2000}
+            height={1000}
+            className="w-full h-auto object-cover"
+            priority
+          />
+        </section>
+
         {/* Product List */}
         <ProductList />
 
@@ -153,6 +166,19 @@ export default function Home() {
             ))}
           </div>
         </SectionWrapper>
+
+        
+        {/* Banner */}
+        <section className="w-full">
+          <Image
+            src="/banner1.png"
+            alt="Trevicio Banner"
+            width={2000}
+            height={1000}
+            className="w-full h-auto object-cover"
+            priority
+          />
+        </section>
 
         {/* Meet The Team Section */}
         <SectionWrapper bg="bg-gray-100" className="text-center">
