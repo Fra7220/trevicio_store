@@ -2,18 +2,12 @@ export const dynamic = "force-dynamic";
 export const fetchCache = "force-no-store";
 
 import Image from "next/image";
-import { default as loadDynamic } from "next/dynamic";
 import Collections from "@/components/Collections";
 import ProductList from "@/components/ProductList";
 import NewArrival from "@/components/NewArrival";
 import Footer from "@/components/Footer";
 import { ReactNode } from "react";
 import Script from "next/script";
-
-// Dynamically load ChatWidget on the client only
-const ChatWidget = loadDynamic(() => import("@/components/ChatWidget"), {
-  ssr: false,
-});
 
 // Section wrapper component with proper TypeScript typing
 type SectionWrapperProps = {
@@ -28,7 +22,7 @@ const SectionWrapper = ({
   className = "",
 }: SectionWrapperProps) => (
   <section
-    className={`reveal ${bg} py-16 px-6 sm:px-10 md:px-16 lg:px-24 ${className}`}
+    className={`${bg} py-16 px-6 sm:px-10 md:px-16 lg:px-24 ${className}`}
   >
     {children}
   </section>
@@ -74,41 +68,6 @@ export default function Home() {
 
   return (
     <>
-      {/* Scroll reveal styles */}
-      <style jsx global>{`
-        .reveal {
-          opacity: 0;
-          transform: translateY(32px);
-          transition: opacity 0.9s ease, transform 0.9s ease;
-          will-change: transform, opacity;
-        }
-
-        .reveal.active {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      `}</style>
-
-      {/* Scroll reveal logic */}
-      <Script id="reveal-script" strategy="afterInteractive">
-        {`
-          const observer = new IntersectionObserver(
-            entries => {
-              entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                  entry.target.classList.add("active");
-                }
-              });
-            },
-            { threshold: 0.15 }
-          );
-
-          document.querySelectorAll(".reveal").forEach(el =>
-            observer.observe(el)
-          );
-        `}
-      </Script>
-
       <main>
         {/* Hero Section */}
         <section className="relative w-full h-[80vh] md:h-[90vh] flex items-center overflow-hidden">
@@ -121,7 +80,7 @@ export default function Home() {
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent" />
           <div className="relative z-20 flex items-center w-full h-full px-6 sm:px-10 md:px-16 lg:px-24">
-            <div className="max-w-lg text-left reveal">
+            <div className="max-w-lg text-left">
               <h1 className="text-white font-bold drop-shadow-2xl mb-4 leading-tight text-[clamp(2rem,6vw,4rem)]">
                 Your Business, <br /> Your Style
               </h1>
@@ -150,7 +109,7 @@ export default function Home() {
         </SectionWrapper>
 
         {/* Banner */}
-        <section className="w-full reveal">
+        <section className="w-full">
           <Image
             src="/banner.png"
             alt="Trevicio Banner"
@@ -173,6 +132,7 @@ export default function Home() {
           </p>
         </SectionWrapper>
 
+        {/* Collections Component */}
         <Collections />
 
         {/* Pre-Products Text */}
@@ -188,7 +148,7 @@ export default function Home() {
         </SectionWrapper>
 
         {/* Banner */}
-        <section className="w-full reveal">
+        <section className="w-full">
           <Image
             src="/banner2.png"
             alt="Trevicio Banner"
@@ -199,6 +159,7 @@ export default function Home() {
           />
         </section>
 
+        {/* Product List */}
         <ProductList />
 
         {/* Services Section */}
@@ -215,7 +176,7 @@ export default function Home() {
             {services.map(({ emoji, title, desc }) => (
               <div
                 key={title}
-                className="reveal bg-gray-100 p-6 rounded-lg shadow-md w-64 text-center"
+                className="bg-gray-100 p-6 rounded-lg shadow-md w-64 text-center"
               >
                 <div className="text-4xl mb-2">{emoji}</div>
                 <h3 className="font-semibold text-lg mb-2">{title}</h3>
@@ -226,13 +187,15 @@ export default function Home() {
         </SectionWrapper>
 
         {/* Pre–New Arrivals Message */}
-        <section className="reveal w-full flex flex-col items-center text-center py-16 px-6 bg-gradient-to-b from-gray-50 to-white">
+        <section className="w-full flex flex-col items-center text-center py-16 px-6 bg-gradient-to-b from-gray-50 to-white">
           <span className="uppercase tracking-widest text-sm font-semibold text-gray-500">
             Fresh Drop
           </span>
+
           <h2 className="mt-4 text-4xl md:text-5xl font-bold text-gray-900">
             Discover What’s New
           </h2>
+
           <p className="mt-4 max-w-2xl text-gray-600 text-lg leading-relaxed">
             Carefully selected, newly added pieces designed to elevate your
             style. Explore our latest arrivals and find something made just for
@@ -241,7 +204,7 @@ export default function Home() {
         </section>
 
         {/* Banner */}
-        <section className="w-full reveal">
+        <section className="w-full">
           <Image
             src="/banner1.png"
             alt="Trevicio Banner"
@@ -252,6 +215,7 @@ export default function Home() {
           />
         </section>
 
+        {/* New Arrivals */}
         <NewArrival />
 
         {/* Meet The Team Section */}
@@ -263,7 +227,7 @@ export default function Home() {
             {teamMembers.map(({ name, role, img }) => (
               <div
                 key={name}
-                className="reveal bg-white p-4 rounded-lg shadow-md w-64"
+                className="bg-white p-4 rounded-lg shadow-md w-64"
               >
                 <Image
                   src={img}
@@ -315,8 +279,39 @@ export default function Home() {
         </SectionWrapper>
       </main>
 
+      {/* Footer */}
       <Footer />
-      <ChatWidget />
+
+      {/* Floating Chat Button via Script (safe for server component) */}
+      <Script
+        id="whatsapp-widget"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `
+            (function () {
+              const btn = document.createElement("a");
+              btn.href = "https://wa.me/265991406247";
+              btn.target = "_blank";
+              btn.style.position = "fixed";
+              btn.style.bottom = "20px";
+              btn.style.left = "20px";
+              btn.style.width = "56px";
+              btn.style.height = "56px";
+              btn.style.borderRadius = "50%";
+              btn.style.backgroundColor = "#25D366";
+              btn.style.display = "flex";
+              btn.style.alignItems = "center";
+              btn.style.justifyContent = "center";
+              btn.style.color = "white";
+              btn.style.fontSize = "28px";
+              btn.style.zIndex = "9999";
+              btn.style.boxShadow = "0 10px 20px rgba(0,0,0,0.25)";
+              btn.innerHTML = "💬";
+              document.body.appendChild(btn);
+            })();
+          `,
+        }}
+      />
     </>
   );
 }
