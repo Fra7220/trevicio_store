@@ -34,7 +34,7 @@ const CollectionDetails = async ({
 
       {/* Collection Description */}
       {collectionDetails.description && (
-        <p className="text-body-medium text-grey-1 text-center max-w-3xl whitespace-pre-line leading-relaxed">
+        <p className="text-body-medium text-blue-900 text-center max-w-3xl whitespace-pre-line leading-relaxed">
           {collectionDetails.description}
         </p>
       )}
