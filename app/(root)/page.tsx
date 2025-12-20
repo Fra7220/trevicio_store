@@ -1,13 +1,20 @@
+"use client";
+
 export const dynamic = "force-dynamic";
 export const fetchCache = "force-no-store";
 
 import Image from "next/image";
+import { default as loadDynamic } from "next/dynamic"; // rename here
 import Collections from "@/components/Collections";
 import ProductList from "@/components/ProductList";
 import NewArrival from "@/components/NewArrival";
 import Footer from "@/components/Footer";
 import { ReactNode } from "react";
-import Script from "next/script";
+
+// Dynamically load ChatWidget on the client only
+const ChatWidget = loadDynamic(() => import("@/components/ChatWidget"), {
+  ssr: false,
+});
 
 // Section wrapper component with proper TypeScript typing
 type SectionWrapperProps = {
@@ -22,7 +29,7 @@ const SectionWrapper = ({
   className = "",
 }: SectionWrapperProps) => (
   <section
-    className={`${bg} py-16 px-6 sm:px-10 md:px-16 lg:px-24 ${className}`}
+    className={`${bg} py-16 px-6 sm:px-10 md:px-16 lg:px-24 ${className} fade-up`}
   >
     {children}
   </section>
@@ -68,9 +75,23 @@ export default function Home() {
 
   return (
     <>
+      {/* Global CSS */}
+      <style jsx global>{`
+        /* Scroll fade-up animation */
+        .fade-up {
+          opacity: 0;
+          transform: translateY(30px);
+          transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .fade-up.visible {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      `}</style>
+
       <main>
         {/* Hero Section */}
-        <section className="relative w-full h-[80vh] md:h-[90vh] flex items-center overflow-hidden">
+        <section className="relative w-full h-[80vh] md:h-[90vh] flex items-center overflow-hidden fade-up">
           <Image
             src="/hero4.png"
             alt="Trevicio Hero"
@@ -79,17 +100,17 @@ export default function Home() {
             className="object-cover object-center"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent" />
-          <div className="relative z-20 flex items-center w-full h-full px-6 sm:px-10 md:px-16 lg:px-24">
+          <div className="relative z-20 flex items-center w-full h-full px-6 sm:px-10 md:px-16 lg:px-24 fade-up">
             <div className="max-w-lg text-left">
-              <h1 className="text-white font-bold drop-shadow-2xl mb-4 leading-tight text-[clamp(2rem,6vw,4rem)]">
+              <h1 className="text-white font-bold drop-shadow-2xl mb-4 leading-tight text-[clamp(2rem,6vw,4rem)] fade-up">
                 Your Business, <br /> Your Style
               </h1>
-              <p className="text-white text-[clamp(0.875rem,2vw,1rem)] md:text-lg mb-4 drop-shadow-xl">
+              <p className="text-white text-[clamp(0.875rem,2vw,1rem)] md:text-lg mb-4 drop-shadow-xl fade-up">
                 Premium products, seamless shopping, and a platform designed for
                 modern lifestyles. Elevate your everyday experiences with
                 Trevicio.
               </p>
-              <p className="text-white text-[clamp(0.75rem,1.5vw,0.875rem)] md:text-base drop-shadow-xl">
+              <p className="text-white text-[clamp(0.75rem,1.5vw,0.875rem)] md:text-base drop-shadow-xl fade-up">
                 Start exploring our collections and experience convenience,
                 quality, and style in every order.
               </p>
@@ -109,7 +130,7 @@ export default function Home() {
         </SectionWrapper>
 
         {/* Banner */}
-        <section className="w-full">
+        <section className="w-full fade-up">
           <Image
             src="/banner.png"
             alt="Trevicio Banner"
@@ -148,7 +169,7 @@ export default function Home() {
         </SectionWrapper>
 
         {/* Banner */}
-        <section className="w-full">
+        <section className="w-full fade-up">
           <Image
             src="/banner2.png"
             alt="Trevicio Banner"
@@ -176,7 +197,7 @@ export default function Home() {
             {services.map(({ emoji, title, desc }) => (
               <div
                 key={title}
-                className="bg-gray-100 p-6 rounded-lg shadow-md w-64 text-center"
+                className="bg-gray-100 p-6 rounded-lg shadow-md w-64 text-center fade-up"
               >
                 <div className="text-4xl mb-2">{emoji}</div>
                 <h3 className="font-semibold text-lg mb-2">{title}</h3>
@@ -187,7 +208,7 @@ export default function Home() {
         </SectionWrapper>
 
         {/* Pre–New Arrivals Message */}
-        <section className="w-full flex flex-col items-center text-center py-16 px-6 bg-gradient-to-b from-gray-50 to-white">
+        <section className="w-full flex flex-col items-center text-center py-16 px-6 bg-gradient-to-b from-gray-50 to-white fade-up">
           <span className="uppercase tracking-widest text-sm font-semibold text-gray-500">
             Fresh Drop
           </span>
@@ -204,7 +225,7 @@ export default function Home() {
         </section>
 
         {/* Banner */}
-        <section className="w-full">
+        <section className="w-full fade-up">
           <Image
             src="/banner1.png"
             alt="Trevicio Banner"
@@ -227,7 +248,7 @@ export default function Home() {
             {teamMembers.map(({ name, role, img }) => (
               <div
                 key={name}
-                className="bg-white p-4 rounded-lg shadow-md w-64"
+                className="bg-white p-4 rounded-lg shadow-md w-64 fade-up"
               >
                 <Image
                   src={img}
@@ -282,33 +303,26 @@ export default function Home() {
       {/* Footer */}
       <Footer />
 
-      {/* Floating Chat Button via Script (safe for server component) */}
-      <Script
-        id="whatsapp-widget"
-        strategy="afterInteractive"
+      {/* Floating Chat Widget */}
+      <ChatWidget />
+
+      {/* Scroll animation script */}
+      <script
         dangerouslySetInnerHTML={{
           __html: `
-            (function () {
-              const btn = document.createElement("a");
-              btn.href = "https://wa.me/265991406247";
-              btn.target = "_blank";
-              btn.style.position = "fixed";
-              btn.style.bottom = "20px";
-              btn.style.left = "20px";
-              btn.style.width = "56px";
-              btn.style.height = "56px";
-              btn.style.borderRadius = "50%";
-              btn.style.backgroundColor = "#25D366";
-              btn.style.display = "flex";
-              btn.style.alignItems = "center";
-              btn.style.justifyContent = "center";
-              btn.style.color = "white";
-              btn.style.fontSize = "28px";
-              btn.style.zIndex = "9999";
-              btn.style.boxShadow = "0 10px 20px rgba(0,0,0,0.25)";
-              btn.innerHTML = "💬";
-              document.body.appendChild(btn);
-            })();
+            if (typeof window !== "undefined") {
+              const observer = new IntersectionObserver(
+                (entries) => {
+                  entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                      entry.target.classList.add("visible");
+                    }
+                  });
+                },
+                { threshold: 0.1 }
+              );
+              document.querySelectorAll(".fade-up").forEach((el) => observer.observe(el));
+            }
           `,
         }}
       />
