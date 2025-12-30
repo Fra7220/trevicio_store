@@ -9,7 +9,7 @@ export default function ChatWidget() {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
 
-  const whatsappNumber = "265991406247"; // without '+'
+  const whatsappNumber = "265998152880"; // without '+'
 
   const handleSend = () => {
     if (!message.trim()) return;
