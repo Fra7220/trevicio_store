@@ -4,8 +4,8 @@ import ProductCard from "./ProductCard";
 const NewArrival = async () => {
   const products = await getProducts();
 
-  // Get last 4 products (newest)
-  const newArrivals = products?.slice(-4).reverse();
+  // Get last 2 products (newest)
+  const newArrivals = products?.slice(-2).reverse();
 
   return (
     <div className="flex flex-col items-center gap-10 py-8 px-5">
